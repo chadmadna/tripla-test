@@ -33,6 +33,12 @@ gem 'bootsnap', require: false
 # Use Rack CORS for handling Cross-Origin Resource Sharing (CORS), making cross-origin Ajax possible
 gem 'rack-cors'
 
+gem 'devise' # For user authentication
+gem 'rolify' # For role management
+gem 'devise_invitable', '~> 2.0.0' # For iniviting members to a publisher account
+gem 'pundit' # For authorizations in the application
+gem 'letter_opener', group: :development # For opening emails in browser during development
+
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem 'debug', platforms: %i[mri mswin mswin64 mingw x64_mingw]
