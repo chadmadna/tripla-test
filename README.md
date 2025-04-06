@@ -8,7 +8,7 @@ Built by Irsyad Nabil for Tripla interview, using template from Eloghene Otiede:
 Whilst there are instructions provided to build the REST-ful API, there are some assumptions to be made, and the project will be coded according to said assumptions.
 
 ## General assumptions
-- Time zone is in UTC (unless specified otherwise in `.env` as `USER_TIMEZONE`.
+- Time zone is in UTC (unless specified otherwise in `.env` as `APP_TIMEZONE`.
 - Authentication with HTTP Basic Auth as provided by the Devise gem.
 
 ## Users
