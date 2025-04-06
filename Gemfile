@@ -38,6 +38,7 @@ gem 'rolify' # For role management
 gem 'devise_invitable', '~> 2.0.0' # For iniviting members to a publisher account
 gem 'pundit' # For authorizations in the application
 gem 'letter_opener', group: :development # For opening emails in browser during development
+gem 'kaminari' # For pagination
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
