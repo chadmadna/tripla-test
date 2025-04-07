@@ -3,13 +3,10 @@ class User < ApplicationRecord
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
   devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable
+         :recoverable, :rememberable, :validatable, :jwt_authenticatable
 
   belongs_to :publisher
   has_many :permissions, through: :roles
-
-  devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :invitable
 
   validates_presence_of :publisher
   before_validation :assign_role_to_account_owner

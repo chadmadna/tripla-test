@@ -36,6 +36,7 @@ gem 'rack-cors'
 gem 'devise' # For user authentication
 gem 'rolify' # For role management
 gem 'devise_invitable', '~> 2.0.0' # For iniviting members to a publisher account
+gem 'devise-jwt' # Use JWT authentication with devise
 gem 'pundit' # For authorizations in the application
 gem 'letter_opener', group: :development # For opening emails in browser during development
 gem 'kaminari' # For pagination
