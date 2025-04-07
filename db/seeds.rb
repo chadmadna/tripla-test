@@ -89,10 +89,10 @@ puts "Creating regular users..."
   last_name = Faker::Name.last_name
 
   user = User.new(
-    email: Faker::Internet.email(name: "#{first_name} #{last_name}", domain: 'triplatest.com'),
-    password: 'password123',
-    password_confirmation: 'password123',
-    name: "#{first_name} #{last_name}",
+    email: "user_#{i + 1}@triplatest.com",
+    password: 'user@tripla!',
+    password_confirmation: 'user@tripla!',
+    name: "User #{i + 1}",
     invited_by: admin_user, # This prevents automatic admin role assignment
     publisher: publisher
   )
@@ -105,7 +105,7 @@ end
 puts "\nSeeding completed!"
 puts "Admin credentials:"
 puts "Email: admin@example.com"
-puts "Password: password123"
+puts "Password: admin@tripla!"
 puts "\nStats:"
 puts "Total users created: #{User.count}"
 puts "Users with admin role: #{User.with_role(:admin, publisher).count}"
