@@ -11,8 +11,102 @@
 #   end
 
 # db/seeds.rb
-Message.create(content: 'Hello!')
-Message.create(content: 'Hi there!')
-Message.create(content: 'Greetings!')
-Message.create(content: 'Howdy!')
-Message.create(content: 'Salutations!')
+require 'faker'
+
+# Clean database
+User.destroy_all
+Publisher.destroy_all
+Role.destroy_all
+Permission.destroy_all
+
+puts "Creating permissions..."
+admin_permissions = [
+  'Users#view_list',
+  'Users#view_one',
+  'Users#view_admin_list',
+  'Users#view_admin_one',
+  'Follows#follow',
+  'Follows#unfollow',
+  'Follows#follow_admin',
+  'Follows#unfollow_admin',
+  'Schedules#view_list',
+  'Schedules#view_one',
+  'Schedules#clock_in',
+  'Schedules#clock_out',
+  'Schedules#view_sleep_schedules',
+  'Publishers#view_list',
+  'Publishers#view_one',
+].map do |permission_name|
+  Permission.create!(name: permission_name)
+end
+
+user_permissions = [
+  "Users#view_list",
+  "Users#view_one",
+  "Follows#follow",
+  "Follows#unfollow",
+  "Schedules#view_list",
+  "Schedules#view_one",
+  "Schedules#clock_in",
+  "Schedules#clock_out",
+  "Schedules#view_sleep_schedules",
+]
+
+puts "User permissions: #{user_permissions}"
+
+puts "Creating publisher..."
+publisher = Publisher.create!(
+  name: "Main Publisher"
+)
+
+puts "Creating roles..."
+admin_role = Role.create!(
+  name: 'admin',
+  resource: publisher,
+  permissions: Permission.all
+)
+
+regular_role = Role.create!(
+  name: 'regular',
+  resource: publisher,
+  permissions: Permission.where(name: user_permissions)
+)
+
+puts "Creating admin user..."
+admin_user = User.create!(
+  email: 'admin@triplatest.com',
+  password: 'admin@tripla!',
+  password_confirmation: 'admin@tripla!',
+  name: 'Admin User',
+  publisher: publisher
+)
+admin_user.save!
+admin_user.add_role(:admin, publisher)
+
+puts "Creating regular users..."
+10.times do |i|
+  first_name = Faker::Name.first_name
+  last_name = Faker::Name.last_name
+
+  user = User.new(
+    email: Faker::Internet.email(name: "#{first_name} #{last_name}", domain: 'triplatest.com'),
+    password: 'password123',
+    password_confirmation: 'password123',
+    name: "#{first_name} #{last_name}",
+    invited_by: admin_user, # This prevents automatic admin role assignment
+    publisher: publisher
+  )
+  user.save!
+  user.add_role(:regular, publisher)
+
+  puts "Created regular user #{i + 1}: #{user.email}"
+end
+
+puts "\nSeeding completed!"
+puts "Admin credentials:"
+puts "Email: admin@example.com"
+puts "Password: password123"
+puts "\nStats:"
+puts "Total users created: #{User.count}"
+puts "Users with admin role: #{User.with_role(:admin, publisher).count}"
+puts "Users with regular role: #{User.with_role(:regular, publisher).count}"
