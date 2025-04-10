@@ -16,7 +16,11 @@ Rails.application.routes.draw do
 
   namespace :api do
     get 'users', to: 'users#index'
+    get 'following', to: 'users#following'
+    get 'followers', to: 'users#followers'
     get 'users/:username', to: 'users#show'
+    post 'users/:username/follow', to: 'users#follow'
+    delete 'users/:username/unfollow', to: 'users#unfollow'
   end
 
   # Defines the root path route ("/")

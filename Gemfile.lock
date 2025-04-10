@@ -83,6 +83,7 @@ GEM
     bootsnap (1.17.0)
       msgpack (~> 1.2)
     builder (3.2.4)
+    byebug (12.0.0)
     childprocess (5.1.0)
       logger (~> 1.5)
     concurrent-ruby (1.2.2)
@@ -260,6 +261,7 @@ PLATFORMS
 
 DEPENDENCIES
   bootsnap
+  byebug
   debug
   devise
   devise-jwt

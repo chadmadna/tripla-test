@@ -1,34 +1,46 @@
 class Api::UsersController < ApplicationController
-  before_action :set_user_by_username, only: [:show, :following, :followers, :follow, :unfollow]
+  before_action :set_user_by_username, only: [:show, :follow, :unfollow]
 
   def index
-    @users = User.all
+    @users = policy_scope(User.all).where.not(id: current_user.id)
     authorize @users
-    return render_jsonapi_response(@users)
+    render json: { data: @users }
   end
 
   def show
-    return render_jsonapi_response(@user)
+    render json: { data: @user }
   end
 
   def following
-    return render_jsonapi_response(@user.following)
+    render json: { data: current_user.following }
   end
 
   def followers
-    return render_jsonapi_response(@user.followers)
+    render json: { data: current_user.followers }
   end
 
   def follow
     authorize @user
-    current_user.following << @user
-    return render_jsonapi_response(@user.following)
+    if @user.id == current_user.id
+      render json: { error: "You can't follow yourself" }, status: :unprocessable_entity
+    elsif current_user.following.include?(@user)
+      render json: { error: "User '#{@user.name}' already followed" }, status: :unprocessable_entity
+    else
+      current_user.following << @user
+      render json: { message: "User '#{@user.name}' followed" }, status: :ok
+    end
   end
 
   def unfollow
     authorize @user
-    @user.following.delete(@user)
-    return render_jsonapi_response(@user.following)
+    if @user.id == current_user.id
+      render json: { error: "You can't unfollow yourself" }, status: :unprocessable_entity
+    elsif current_user.following.include?(@user)
+      current_user.following.delete(@user)
+      render json: { message: "User '#{@user.name}' unfollowed" }, status: :ok
+    else
+      render json: { error: "User '#{@user.name}' not followed" }, status: :unprocessable_entity
+    end
   end
   private
 
@@ -36,8 +48,8 @@ class Api::UsersController < ApplicationController
     begin
       @user = User.find_by(email: "#{params[:username]}@triplatest.com")
       authorize @user
-    rescue ActiveRecord::RecordNotFound, Pundit::NotAuthorizedError
-      render_jsonapi_response({ error: "User not found" }, :not_found)
+    rescue ActiveRecord::RecordNotFound, Pundit::NotAuthorizedError, Pundit::NotDefinedError
+      render json: { error: "User not found" }, status: :not_found
     end
   end
 end
