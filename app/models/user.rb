@@ -15,8 +15,13 @@ class User < ApplicationRecord
 
   has_many :user_follows, foreign_key: :following_id
 
-  has_many :followers, through: :user_follows, source: :follower
-  has_many :following, through: :user_follows, source: :following
+  has_many :following_relationships, class_name: "UserFollow", foreign_key: :follower_id
+  has_many :follower_relationships, class_name: "UserFollow", foreign_key: :following_id
+
+  has_many :following, through: :following_relationships, source: :following
+  has_many :followers, through: :follower_relationships, source: :follower
+
+  has_many :schedules
 
   private
 

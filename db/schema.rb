@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_10_192737) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_10_201537) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -59,13 +59,26 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_10_192737) do
     t.index ["role_id"], name: "index_roles_permissions_on_role_id"
   end
 
+  create_table "schedules", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.datetime "clock_in"
+    t.datetime "clock_out"
+    t.string "description"
+    t.integer "lock_version", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["clock_in"], name: "index_schedules_on_clock_in"
+    t.index ["id", "clock_in"], name: "index_schedules_on_id_and_clock_in"
+    t.index ["user_id"], name: "index_schedules_on_user_id"
+  end
+
   create_table "user_follows", force: :cascade do |t|
     t.bigint "follower_id", null: false
     t.bigint "following_id", null: false
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0
     t.index ["discarded_at"], name: "index_user_follows_on_discarded_at"
     t.index ["follower_id", "following_id"], name: "index_user_follows_on_follower_id_and_following_id", unique: true
     t.index ["follower_id"], name: "index_user_follows_on_follower_id"
@@ -90,7 +103,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_10_192737) do
     t.integer "invitations_count", default: 0
     t.string "name", null: false
     t.bigint "publisher_id", null: false
-    t.integer "lock_version"
+    t.integer "lock_version", default: 0
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
@@ -107,6 +120,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_10_192737) do
     t.index ["user_id"], name: "index_users_roles_on_user_id"
   end
 
+  add_foreign_key "schedules", "users"
   add_foreign_key "user_follows", "users", column: "follower_id"
   add_foreign_key "user_follows", "users", column: "following_id"
 end

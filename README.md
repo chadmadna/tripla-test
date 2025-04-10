@@ -71,6 +71,7 @@ This command will generate a 32-byte hex string that you can use as your Rails m
 2. Run `rails db:seed`: It will create 1 admin user and 10 regular users.
    1. Admin user email: `admin@triplatest.com`, password: `admin@tripla!`
    2. Regular user email, where `$` equals number 1 to 10: `user_$@triplatest.com`, password: `user@tripla!`
+3. Optionally, run `rails db:seed_large_data` to seed large amounts of data to test with a larger amount of data.
 
 # List of Features
 
@@ -335,6 +336,8 @@ Response: 401 Unauthorized
 ## View Sleep Records (clock-in/out)
 - Views a list of all sleep (clock-in/out) records of the followings of the current user, sorted by duration descending.
 	- Sleep record is shown as the time between 1st clock-out to 2nd clock-in, 2nd clock-out to 3rd clock-in, and so on.
+	- Assumes current user is also included in the sleep records list.
+	- Assumes only complete clockout-clockin pairs are included, meaning clock-in cannot be null.
 
 ### View all sleep records, normal scenario
 ```
@@ -344,25 +347,18 @@ Response: 200 OK
 {
   "data": [
     {
-	  "user_id": 1,
-	  "name": "Regular User 1",
+      "user_id": 1,
+      "name": "Regular User 1",
       "clock_out": "2025-04-07T21:00:00.000Z",
       "clock_in": "2025-04-08T09:00:00.000Z",
       "duration": "12:00:00"
     },
     {
-	  "user_id": 2,
-	  "name": "Regular User 2",
+      "user_id": 2,
+      "name": "Regular User 2",
       "clock_out": "2025-04-06T22:34:00.000Z",
       "clock_in": "2025-04-07T09:16:00.000Z",
       "duration": "10:42:00"
-    },
-    {
-	  "user_id": 1,
-	  "name": "Regular User 1",
-      "clock_out": "2025-04-08T23:30:00.000Z",
-      "clock_in": null,
-      "duration": "09:30:00" // up to current time
     },
     ...
   ],
