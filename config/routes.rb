@@ -2,9 +2,9 @@
 
 Rails.application.routes.draw do
   devise_for :users,
+    skip: :sessions,
     path: '',
     path_names: { sign_in: 'login', sign_out: 'logout' },
-    controllers: { sessions: 'users/sessions' },
     defaults: { format: :json }
 
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

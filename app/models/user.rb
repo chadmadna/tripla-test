@@ -4,8 +4,7 @@ class User < ApplicationRecord
   rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
-  devise :invitable, :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :validatable, :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
+  devise :invitable, :recoverable, :validatable, :jwt_authenticatable, jwt_revocation_strategy: JwtDenylist
 
   belongs_to :publisher
   has_many :permissions, through: :roles
