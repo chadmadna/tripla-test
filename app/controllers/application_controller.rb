@@ -1,9 +1,8 @@
 class ApplicationController < ActionController::API
   include Pundit::Authorization
-  include RackSessionFix
 
   respond_to :json
-  before_action :authenticate_user!
+  before_action :authenticate_user!, unless: :devise_controller?
 
   private
 
