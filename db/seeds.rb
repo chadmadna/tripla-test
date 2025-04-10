@@ -62,13 +62,11 @@ publisher = Publisher.create!(
 puts "Creating roles..."
 admin_role = Role.create!(
   name: 'admin',
-  resource: publisher,
   permissions: Permission.all
 )
 
 regular_role = Role.create!(
   name: 'regular',
-  resource: publisher,
   permissions: Permission.where(name: user_permissions)
 )
 
@@ -80,8 +78,8 @@ admin_user = User.create!(
   name: 'Admin User',
   publisher: publisher
 )
+admin_user.add_role(:admin)
 admin_user.save!
-admin_user.add_role(:admin, publisher)
 
 puts "Creating regular users..."
 10.times do |i|
@@ -96,8 +94,8 @@ puts "Creating regular users..."
     invited_by: admin_user, # This prevents automatic admin role assignment
     publisher: publisher
   )
+  user.add_role(:regular)
   user.save!
-  user.add_role(:regular, publisher)
 
   puts "Created regular user #{i + 1}: #{user.email}"
 end

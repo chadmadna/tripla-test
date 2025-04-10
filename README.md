@@ -3,13 +3,76 @@
 Built by Irsyad Nabil for Tripla interview, using template from Eloghene Otiede: https://github.com/geekelo/hello-rails-back-end/
 
 
+# Quick Start
+
+## Database Setup
+
+1. **Create a PostgreSQL User:**
+
+   Use the `createuser` command to create a new PostgreSQL user with the username specified in the `.env.example` file.
+
+   ```bash
+   createuser -P -s -e tripla_test
+   ```
+
+   - `-P` prompts for a password (use `tripla_test` as specified in the `.env.example`).
+   - `-s` grants superuser privileges.
+   - `-e` echoes the commands that `createuser` generates and sends to the server.
+
+2. **Create a PostgreSQL Database:**
+
+   Use the `createdb` command to create a new database with the name specified in the `.env.example` file.
+
+   ```bash
+   createdb -O tripla_test tripla_test
+   ```
+
+   - `-O` specifies the database owner.
+
+## Rails Credentials Setup
+
+If you need to set up Rails credentials, you can use the `RAILS_MASTER_KEY` provided in the `.env.example` file. Replace `replace_with_master_key` with your actual master key.
+
+1. **Edit Rails Credentials:**
+
+   Run the following command to edit the Rails credentials:
+
+   ```bash
+   EDITOR="nano" bin/rails credentials:edit
+   ```
+
+   - Replace `nano` with your preferred text editor.
+
+2. **Add the Master Key:**
+
+   Ensure that the `config/master.key` file contains the `RAILS_MASTER_KEY` value from the `.env.example` file.
+
+This setup is intended for local development only. Make sure to replace any placeholder values with actual secure values if deploying to a production environment.
+
+### Generating your own master key
+
+To generate your own hex master key, you can use the following command:
+
+```bash
+openssl rand -hex 32
+```
+
+This command will generate a 32-byte hex string that you can use as your Rails master key. Make sure to update the `RAILS_MASTER_KEY` in your `.env` file with this new key.
+
+## Rails Migrations Setup
+
+1. Run `rails db:migrate`
+2. Run `rails db:seed`: It will create 1 admin user and 10 regular users.
+   1. Admin user email: `admin@triplatest.com`, password: `admin@tripla!`
+   2. Regular user email, where `$` equals number 1 to 10: `user_$@triplatest.com`, password: `user@tripla!`
+
 # List of Features
 
 Whilst there are instructions provided to build the REST-ful API, there are some assumptions to be made, and the project will be coded according to said assumptions.
 
 ## General assumptions
-- Time zone is in UTC (unless specified otherwise in `.env` as `APP_TIMEZONE`.
-- Authentication with HTTP Basic Auth as provided by the Devise gem.
+- Time zone is in UTC (unless specified otherwise in `.env` as `APP_TIMEZONE`).
+- Authentication JWT as provided by the Devise gem and its JWT extension.
 
 ## Users
 
@@ -19,6 +82,45 @@ Whilst there are instructions provided to build the REST-ful API, there are some
 - Admin user can see all users including their clock-in and clock-outs.
 	- This assumes admin users have superuser-like privilege.
 - All users can log-in and log-out with pre-determined seeded credentials.
+
+### Login
+
+Login and further authentication uses Bearer Token auth.
+Store the token (`response.data.user.token`) somewhere (e.g. `localStorage`), and use it in `Authorization: Bearer {token}` header.
+
+```
+POST /login
+{
+    "user": {
+        "email": "user_1@triplatest.com",
+        "password": "user@tripla!"
+    }
+}
+
+Response: 200 OK
+{
+    "status": 200,
+    "message": "Logged in successfully.",
+    "data": {
+        "user": {
+            "id": 2,
+            "email": "user_1@triplatest.com",
+            "roles": [
+                "regular"
+            ],
+            "token": "..."
+        }
+    }
+}
+```
+
+### Logout
+
+```
+DELETE /logout
+Headers:
+  Authorization: Bearer ...
+```
 
 ## Clock-in (and clock-out)
 
@@ -167,7 +269,7 @@ Response: 200 OK
     "page": 1,
     "page_size": 10,
     "has_next": true
-  ]
+  },
   "status_code": 200
 }
 ```

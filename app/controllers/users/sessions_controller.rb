@@ -4,10 +4,18 @@ class Users::SessionsController < Devise::SessionsController
   private
 
   def respond_with(resource, _opts = {})
+    token = request.env['warden-jwt_auth.token']
     render json: {
       status: 200,
       message: 'Logged in successfully.',
-      data: UserSerializer.new(resource).serializable_hash[:data][:attributes]
+      data: {
+        user: {
+          id: resource.id,
+          email: resource.email,
+          roles: resource.roles.map(&:name),
+          token: token
+        }
+      }
     }
   end
 
