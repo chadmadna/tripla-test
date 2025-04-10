@@ -3,6 +3,7 @@ namespace :db do
   task seed_large_data: [:environment] do
     require 'faker'
 
+    Schedule.destroy_all
     UserFollow.destroy_all
     User.destroy_all
     Publisher.destroy_all
@@ -83,7 +84,7 @@ namespace :db do
     users.each do |user|
       last_clock_out_time = DateTime.new(2025, 1, 1)
       100.times do
-        clock_in_time = Faker::Time.between(from: last_clock_out_time, to: last_clock_out_time + 3.days)
+        clock_in_time = Faker::Time.between(from: last_clock_out_time, to: last_clock_out_time + 12.hours)
         clock_out_time = Faker::Time.between(from: clock_in_time, to: clock_in_time + 8.hours)
         if clock_in_time > DateTime.new(2025, 4, 10) || clock_out_time > DateTime.new(2025, 4, 10)
           break

@@ -44,6 +44,7 @@ gem 'faker' # For generating fake data
 gem 'discard' # For soft deletions
 gem 'active_model_serializers' # For serializing the API responses
 gem 'interactor-rails' # For using Interactor
+gem 'dotiw' # Humanize ISO8601 duration
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

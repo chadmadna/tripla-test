@@ -1,16 +1,21 @@
+require 'dotiw'
+
 class GetSleepSchedules
   include Interactor
+  include ActionView::Helpers::DateHelper
+  include ActionView::Helpers::TextHelper
+  include ActionView::Helpers::NumberHelper
 
   def call
     context.attempts ||= 0
     begin
-      user_ids = ActiveRecord::Base.sanitize([context.user.following.pluck(:id), context.user.id].flatten)
+      user_ids = [context.user.following.pluck(:id), context.user.id].flatten
       sql = <<~SQL
         WITH numbered AS (
           SELECT *,
                 ROW_NUMBER() OVER (ORDER BY clock_in) AS rn
           FROM schedules
-          WHERE user_id IN (#{user_ids.join(',')})
+          WHERE user_id IN (?)
         ),
         paired AS (
           SELECT
@@ -28,26 +33,24 @@ class GetSleepSchedules
           FROM numbered s1
           JOIN numbered s2 ON s2.rn = s1.rn + 1
         )
-        SELECT * FROM paired
+        SELECT user_id, clock_out, clock_in, gap::interval AS gap
+        FROM paired
         ORDER BY gap DESC
+        LIMIT ? OFFSET ?
       SQL
 
-      limit = ActiveRecord::Base.sanitize(context.limit)
-      offset = ActiveRecord::Base.sanitize(context.offset)
-      paginated_sql = <<~SQL
-        #{sql}
-        LIMIT #{limit}
-        OFFSET #{offset}
-      SQL
+      sanitized_sql = ActiveRecord::Base.sanitize_sql([sql, user_ids, context.limit, context.offset])
 
-      raw_results = ActiveRecord::Base.connection.execute(paginated_sql)
+      raw_results = ActiveRecord::Base.connection.execute(sanitized_sql)
       context.sleep_schedules = raw_results.map do |result|
-        {
-          user_id: result['user_id'],
-          clock_out: result['clock_out'],
-          clock_in: result['clock_in']
-          duration: result['gap'],
-        }
+        Struct.new('SleepSchedule', :user_id, :clock_out, :clock_in, :duration).new(
+          result['user_id'],
+          result['clock_out'],
+          result['clock_in'],
+          distance_of_time_in_words(
+            ActiveSupport::Duration.parse(result['gap']),
+          )
+        )
       end
     rescue ActiveRecord::StaleObjectError
       context.attempts += 1

@@ -1,4 +1,4 @@
-class SchedulesController < ApplicationController
+class Api::SchedulesController < ApplicationController
   def index
     @schedules = policy_scope(Schedule.all)
     authorize @schedules
@@ -11,7 +11,7 @@ class SchedulesController < ApplicationController
 
     result = GetSleepSchedules.call(user: current_user, limit: limit, offset: offset)
     if result.success?
-      render json: result.schedules
+      render json: result.sleep_schedules
     else
       render json: { error: result.message }, status: :internal_server_error
     end

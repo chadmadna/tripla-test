@@ -114,6 +114,9 @@ GEM
       devise (>= 4.6)
     discard (1.4.0)
       activerecord (>= 4.2, < 9.0)
+    dotiw (5.3.3)
+      activesupport
+      i18n
     drb (2.2.0)
       ruby2_keywords
     dry-auto_inject (1.1.0)
@@ -280,6 +283,7 @@ DEPENDENCIES
   devise-jwt
   devise_invitable (~> 2.0.0)
   discard
+  dotiw
   faker
   interactor-rails
   kaminari

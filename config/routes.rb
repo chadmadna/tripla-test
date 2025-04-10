@@ -21,8 +21,8 @@ Rails.application.routes.draw do
     get 'users/:username', to: 'users#show'
     post 'users/:username/follow', to: 'users#follow'
     delete 'users/:username/unfollow', to: 'users#unfollow'
+    get 'sleep_schedules', to: 'schedules#index'
+    post 'clock_in', to: 'schedules#clock_in'
+    post 'clock_out', to: 'schedules#clock_out'
   end
-
-  # Defines the root path route ("/")
-  # root "posts#index"
 end
