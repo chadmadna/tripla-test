@@ -42,6 +42,8 @@ gem 'letter_opener', group: :development # For opening emails in browser during 
 gem 'kaminari' # For pagination
 gem 'faker' # For generating fake data
 gem 'discard' # For soft deletions
+gem 'active_model_serializers' # For serializing the API responses
+gem 'interactor-rails' # For using Interactor
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem

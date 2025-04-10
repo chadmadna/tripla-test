@@ -4,19 +4,19 @@ class Api::UsersController < ApplicationController
   def index
     @users = policy_scope(User.all).where.not(id: current_user.id)
     authorize @users
-    render json: { data: @users }
+    render json: @users
   end
 
   def show
-    render json: { data: @user }
+    render json: @user, serializer: UserDetailsSerializer
   end
 
   def following
-    render json: { data: current_user.following }
+    render json: current_user.following
   end
 
   def followers
-    render json: { data: current_user.followers }
+    render json: current_user.followers
   end
 
   def follow

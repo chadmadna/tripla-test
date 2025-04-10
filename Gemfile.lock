@@ -50,6 +50,11 @@ GEM
       erubi (~> 1.11)
       rails-dom-testing (~> 2.2)
       rails-html-sanitizer (~> 1.6)
+    active_model_serializers (0.10.15)
+      actionpack (>= 4.1)
+      activemodel (>= 4.1)
+      case_transform (>= 0.2)
+      jsonapi-renderer (>= 0.1.1.beta1, < 0.3)
     activejob (7.1.2)
       activesupport (= 7.1.2)
       globalid (>= 0.3.6)
@@ -84,6 +89,8 @@ GEM
       msgpack (~> 1.2)
     builder (3.2.4)
     byebug (12.0.0)
+    case_transform (0.2)
+      activesupport
     childprocess (5.1.0)
       logger (~> 1.5)
     concurrent-ruby (1.2.2)
@@ -126,10 +133,15 @@ GEM
       activesupport (>= 6.1)
     i18n (1.14.1)
       concurrent-ruby (~> 1.0)
+    interactor (3.1.2)
+    interactor-rails (2.3.0)
+      interactor (~> 3.0)
+      railties (>= 7.0)
     io-console (0.6.0)
     irb (1.9.0)
       rdoc
       reline (>= 0.3.8)
+    jsonapi-renderer (0.2.2)
     jwt (2.10.1)
       base64
     kaminari (1.2.2)
@@ -260,6 +272,7 @@ PLATFORMS
   x86_64-linux
 
 DEPENDENCIES
+  active_model_serializers
   bootsnap
   byebug
   debug
@@ -268,6 +281,7 @@ DEPENDENCIES
   devise_invitable (~> 2.0.0)
   discard
   faker
+  interactor-rails
   kaminari
   letter_opener
   pg (~> 1.1)
