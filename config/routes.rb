@@ -15,7 +15,8 @@ Rails.application.routes.draw do
 # config/routes.rb
 
   namespace :api do
-    get 'greetings/random', to: 'greetings#random'
+    get 'users', to: 'users#index'
+    get 'users/:username', to: 'users#show'
   end
 
   # Defines the root path route ("/")

@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Discard::Model
+
   rolify
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable, :trackable and :omniauthable
@@ -10,6 +12,11 @@ class User < ApplicationRecord
 
   validates_presence_of :publisher
   before_validation :assign_role_to_account_owner
+
+  has_many :user_follows, foreign_key: :following_id
+
+  has_many :followers, through: :user_follows, source: :follower
+  has_many :following, through: :user_follows, source: :following
 
   private
 

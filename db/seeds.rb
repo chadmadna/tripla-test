@@ -14,45 +14,10 @@
 require 'faker'
 
 # Clean database
+UserFollow.destroy_all
 User.destroy_all
 Publisher.destroy_all
 Role.destroy_all
-Permission.destroy_all
-
-puts "Creating permissions..."
-admin_permissions = [
-  'Users#view_list',
-  'Users#view_one',
-  'Users#view_admin_list',
-  'Users#view_admin_one',
-  'Follows#follow',
-  'Follows#unfollow',
-  'Follows#follow_admin',
-  'Follows#unfollow_admin',
-  'Schedules#view_list',
-  'Schedules#view_one',
-  'Schedules#clock_in',
-  'Schedules#clock_out',
-  'Schedules#view_sleep_schedules',
-  'Publishers#view_list',
-  'Publishers#view_one',
-].map do |permission_name|
-  Permission.create!(name: permission_name)
-end
-
-user_permissions = [
-  "Users#view_list",
-  "Users#view_one",
-  "Follows#follow",
-  "Follows#unfollow",
-  "Schedules#view_list",
-  "Schedules#view_one",
-  "Schedules#clock_in",
-  "Schedules#clock_out",
-  "Schedules#view_sleep_schedules",
-]
-
-puts "User permissions: #{user_permissions}"
 
 puts "Creating publisher..."
 publisher = Publisher.create!(
@@ -67,7 +32,7 @@ admin_role = Role.create!(
 
 regular_role = Role.create!(
   name: 'regular',
-  permissions: Permission.where(name: user_permissions)
+  permissions: Permission.all
 )
 
 puts "Creating admin user..."
@@ -100,11 +65,20 @@ puts "Creating regular users..."
   puts "Created regular user #{i + 1}: #{user.email}"
 end
 
+regular_users = User.includes(:roles).where({ roles: { name: :regular } })
+regular_users.each do |user|
+  users_to_follow = regular_users.where.not(id: user.id).filter { |u| user.id % 2 == 0 ? u.id % 2 == 0 : u.id % 2 == 1 }
+  users_to_follow.each do |following|
+    UserFollow.create!(follower: user, following: following)
+  end
+  puts "User #{user.email} following #{users_to_follow.map(&:email).join(', ')}"
+end
+
 puts "\nSeeding completed!"
 puts "Admin credentials:"
 puts "Email: admin@example.com"
 puts "Password: admin@tripla!"
 puts "\nStats:"
 puts "Total users created: #{User.count}"
-puts "Users with admin role: #{User.with_role(:admin, publisher).count}"
+puts "Users with admin role: #{User.with_role(:admin).count}"
 puts "Users with regular role: #{User.with_role(:regular, publisher).count}"

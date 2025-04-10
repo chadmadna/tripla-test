@@ -244,10 +244,10 @@ Response: 401 Unauthorized
 ## View Users
 - Users can view list of all users.
 - Users can filter list of all users based on the following:
-	- All users (no status params for admin users, `view=discover` for regular users)
-	- Following (`view=following`)
-	- Followers (`view=followers`)
-	- Discover (not followed) (`view=discover`)
+	- All users (no status params for admin users)
+	- Following (`users/following`)
+	- Followers (`users/followers`)
+	- Discover (not followed) (`users/`)
 - User can browse for users to follow.
 - Admin user accounts are not displayed in regular users' discover list.
 - Accessing user details endpoint will display user details such as id, and name.
@@ -255,7 +255,7 @@ Response: 401 Unauthorized
 
 ### View paginated users, normal scenario
 ```
-GET /users?view=discover
+GET /users
 Response: 200 OK
 {
   "data": {
@@ -282,7 +282,7 @@ Location: localhost:3000/users?view=discover
 ### View paginated users, with errors
 ```
 # View users unauthenticated
-GET /users?view=discover
+GET /users
 Response: 401 Unauthorized
 {
   "error": "Unauthorized",

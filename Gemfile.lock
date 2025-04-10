@@ -104,6 +104,8 @@ GEM
     devise_invitable (2.0.10)
       actionmailer (>= 5.0)
       devise (>= 4.6)
+    discard (1.4.0)
+      activerecord (>= 4.2, < 9.0)
     drb (2.2.0)
       ruby2_keywords
     dry-auto_inject (1.1.0)
@@ -262,6 +264,7 @@ DEPENDENCIES
   devise
   devise-jwt
   devise_invitable (~> 2.0.0)
+  discard
   faker
   kaminari
   letter_opener
