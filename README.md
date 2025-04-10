@@ -5,6 +5,12 @@ Built by Irsyad Nabil for Tripla interview, using template from Eloghene Otiede:
 
 # Quick Start
 
+Prerequisites:
+- PostgreSQL
+- Rails >= 7.1.2
+- Ruby 3.3.1
+- Redis
+
 ## Database Setup
 
 1. **Create a PostgreSQL User:**
@@ -373,3 +379,15 @@ Response: 401 Unauthorized
   "statusCode": 401
 }
 ```
+# Overall strategies
+
+Given that:
+> "... the system must efficiently handle a growing user base, managing high data volumes and concurrent requests"
+
+We approach different availability and consistency strategies for different features.
+
+- For the user follow/unfollow feature, we prioritize availability by using optimistic locking via the `lock_version` column on `UserFollow` and `User` model.
+- For the clock-in/out feature, we prioritize consistency by using pessimistic locking and transactions on both clock-in and clock-out endpoints.
+
+For efforts outside of the application level, we can implement caching, database indexing, and load balancing.
+- `@TODO: Implement Redis caching`

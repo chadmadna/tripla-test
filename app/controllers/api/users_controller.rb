@@ -21,25 +21,21 @@ class Api::UsersController < ApplicationController
 
   def follow
     authorize @user
-    if @user.id == current_user.id
-      render json: { error: "You can't follow yourself" }, status: :unprocessable_entity
-    elsif current_user.following.include?(@user)
-      render json: { error: "User '#{@user.name}' already followed" }, status: :unprocessable_entity
+    result = FollowUser.call(user: @user, current_user: current_user)
+    if result.success?
+      render json: { message: result.message, following: current_user.reload.following }, status: :ok
     else
-      current_user.following << @user
-      render json: { message: "User '#{@user.name}' followed" }, status: :ok
+      render json: { error: result.message }, status: :unprocessable_entity
     end
   end
 
   def unfollow
     authorize @user
-    if @user.id == current_user.id
-      render json: { error: "You can't unfollow yourself" }, status: :unprocessable_entity
-    elsif current_user.following.include?(@user)
-      current_user.following.delete(@user)
-      render json: { message: "User '#{@user.name}' unfollowed" }, status: :ok
+    result = UnfollowUser.call(user: @user, current_user: current_user)
+    if result.success?
+      render json: { message: result.message, following: current_user.reload.following }, status: :ok
     else
-      render json: { error: "User '#{@user.name}' not followed" }, status: :unprocessable_entity
+      render json: { error: result.message }, status: :unprocessable_entity
     end
   end
   private

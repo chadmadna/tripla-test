@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_04_10_163300) do
+ActiveRecord::Schema[7.1].define(version: 2025_04_10_192737) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -65,6 +65,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_10_163300) do
     t.datetime "discarded_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "lock_version"
     t.index ["discarded_at"], name: "index_user_follows_on_discarded_at"
     t.index ["follower_id", "following_id"], name: "index_user_follows_on_follower_id_and_following_id", unique: true
     t.index ["follower_id"], name: "index_user_follows_on_follower_id"
@@ -89,6 +90,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_04_10_163300) do
     t.integer "invitations_count", default: 0
     t.string "name", null: false
     t.bigint "publisher_id", null: false
+    t.integer "lock_version"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["invitation_token"], name: "index_users_on_invitation_token", unique: true
     t.index ["invited_by_id"], name: "index_users_on_invited_by_id"
