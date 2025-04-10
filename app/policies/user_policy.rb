@@ -17,7 +17,7 @@ class UserPolicy < ApplicationPolicy
 
     private
 
-    attr_reader :user, :record
+    attr_reader :user, :scope
   end
 
   def index?
