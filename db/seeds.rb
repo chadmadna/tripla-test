@@ -18,6 +18,11 @@ UserFollow.destroy_all
 User.destroy_all
 Publisher.destroy_all
 Role.destroy_all
+Permission.destroy_all
+
+Permission.create!(
+  name: 'default',
+)
 
 puts "Creating publisher..."
 publisher = Publisher.create!(
@@ -72,6 +77,22 @@ regular_users.each do |user|
     UserFollow.create!(follower: user, following: following)
   end
   puts "User #{user.email} following #{users_to_follow.map(&:email).join(', ')}"
+end
+
+# Create Clock-In/Clock-Out Schedules
+regular_users.each do |user|
+  last_clock_out_time = DateTime.new(2025, 1, 1)
+  30.times do
+    clock_in_time = Faker::Time.between(from: last_clock_out_time, to: last_clock_out_time + 3.days)
+    clock_out_time = Faker::Time.between(from: clock_in_time, to: clock_in_time + 8.hours)
+    if clock_in_time > DateTime.new(2025, 4, 10) || clock_out_time > DateTime.new(2025, 4, 10)
+      break
+    end
+
+    user.schedules.create!(clock_in: clock_in_time, clock_out: clock_out_time)
+    last_clock_out_time = clock_out_time
+  end
+  puts "Created clock-in/out schedules for #{user.email}"
 end
 
 puts "\nSeeding completed!"
