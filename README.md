@@ -262,7 +262,7 @@ Response: 401 Unauthorized
 
 ### View paginated users, normal scenario
 ```
-GET /users
+GET /users?page=2&page_size=15
 Response: 200 OK
 {
   "data": {
@@ -273,9 +273,9 @@ Response: 200 OK
 	  },
 	  ...
 	],
-    "page": 1,
-    "page_size": 10,
-    "has_next": true
+    "page": 2,
+    "page_size": 15,
+    "total": 99
   },
   "status_code": 200
 }
@@ -338,11 +338,12 @@ Response: 401 Unauthorized
 	- Sleep record is shown as the time between 1st clock-out to 2nd clock-in, 2nd clock-out to 3rd clock-in, and so on.
 	- Assumes current user is also included in the sleep records list.
 	- Assumes only complete clockout-clockin pairs are included, meaning clock-in cannot be null.
+	- Duration is displayed as humanized format.
 
 ### View all sleep records, normal scenario
 ```
 # Current time: 9 April 2025, 09:00:00
-GET /sleep-records
+GET /sleep_schedules?page=2&page_size=15
 Response: 200 OK
 {
   "data": [
@@ -351,14 +352,14 @@ Response: 200 OK
       "name": "Regular User 1",
       "clock_out": "2025-04-07T21:00:00.000Z",
       "clock_in": "2025-04-08T09:00:00.000Z",
-      "duration": "12:00:00"
+      "duration": "12 hours"
     },
     {
       "user_id": 2,
       "name": "Regular User 2",
       "clock_out": "2025-04-06T22:34:00.000Z",
       "clock_in": "2025-04-07T09:16:00.000Z",
-      "duration": "10:42:00"
+      "duration": "10 hours and 42 minutes"
     },
     ...
   ],

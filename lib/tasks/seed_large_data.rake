@@ -84,7 +84,7 @@ namespace :db do
     # Create Clock-In/Clock-Out Schedules
     users.each do |user|
       last_clock_out_time = DateTime.new(2025, 1, 1)
-      100.times do
+      (30..100).to_a.sample.times do
         clock_in_time = Faker::Time.between(from: last_clock_out_time, to: last_clock_out_time + 12.hours)
         clock_out_time = Faker::Time.between(from: clock_in_time, to: clock_in_time + 8.hours)
         if clock_in_time > DateTime.new(2025, 4, 10) || clock_out_time > DateTime.new(2025, 4, 10)

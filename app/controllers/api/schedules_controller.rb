@@ -4,16 +4,15 @@ class Api::SchedulesController < ApplicationController
     authorize @schedules
 
     # Manual pagination since using raw query
-    page_size =  schedule_params[:page_size] || 10
-    page = schedule_params[:page] || 1
-    limit = page_size.to_i
-    offset = (page.to_i - 1) * limit
+    page_size =  schedule_params[:page_size]&.to_i || 10
+    page = schedule_params[:page]&.to_i || 1
+    offset = (page - 1) * page_size
 
-    result = GetSleepSchedules.call(user: current_user, limit: limit, offset: offset)
+    result = GetSleepSchedules.call(user: current_user, limit: page_size, offset: offset)
     if result.success?
       render json: {
         data: result.sleep_schedules,
-        pagination: { total: result.total_count, page: page, page_size: limit },
+        pagination: { total: result.total_count, page: page, page_size: page_size },
       }
     else
       render json: { error: result.message }, status: :internal_server_error
