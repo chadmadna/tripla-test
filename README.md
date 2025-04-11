@@ -41,7 +41,7 @@ Prerequisites:
    createdb -O tripla_test tripla_test
    ```
 
-   Then run `rspec`
+   Then run `rspec`.
 
 ## Rails Credentials Setup
 
@@ -151,22 +151,16 @@ Headers:
 POST /clock-in
 Response: 201 Created
 {
-  "data": {
-    "message": "Good morning, Joe! Enjoy your day.",
-    "time": "2025-04-07T09:00:00.000Z"
-  },
-  "statusCode": 201
+  "message": "Good morning, Joe! Enjoy your day.",
+  "time": "2025-04-07T09:00:00.000Z"
 }
 ```
 ```
 POST /clock-out
 Response: 201 Created
 {
-  "data": {
-    "message": "Good night, Joe. Have a good rest."
-    "time": "2025-04-07T21:00:00.000Z"
-  },
-  "status_code": 201
+  "message": "Good night, Joe. Have a good rest."
+  "time": "2025-04-07T21:00:00.000Z"
 }
 ```
 ### Clocking in/out, with errors
@@ -184,8 +178,7 @@ Response: 400 Bad Request
 POST /clock-out
 Response: 400 Bad Request
 {
-  "error": "Cannot clock-out: current user has not clocked-in previously",
-  "status_code": 400
+  "error": "User already clocked out, need to clock in first"
 }
 ```
 ```
@@ -194,7 +187,6 @@ POST /clock-out
 Response: 401 Unauthorized
 {
   "error": "Unauthorized",
-  "status_code": 401
 }
 ```
 
@@ -214,45 +206,58 @@ Response: 401 Unauthorized
 
 ### Follow/unfollow, normal scenario
 ```
-POST /users/regularuser1/follow
+POST /users/3/follow
 Response: 200 OK
 {
-  "status_code": 200
+  "message": "User 'User 3' followed",
+  "following": [
+    {
+      "id": 3,
+      "email": "user_2@triplatest.com",
+      "name": "User 2",
+    },
+    ...
+  ]
 }
 ```
 ```
-POST /users/regularuser1/unfollow
+POST /users/3/unfollow
 Response: 200 OK
 {
-  "status_code": 200
+  "message": "User 'User 3' unfollowed",
+  "following": [
+    {
+      "id": 4,
+      "email": "user_3@triplatest.com",
+      "name": "User 3"
+    },
+    ...
+  ]
 }
 ```
 ### Follow/unfollow, with errors
 ```
 # Following after already followed
-POST /users/regularuser1/follow
+POST /users/3/follow
 Response: 400 Bad Request
 {
-  "error": "Cannot follow user: current user already follows user 'regularuser1'",
-  "status_code": 400
+  "error": "User 'User 3' already followed"
 }
 ```
 ```
 # Following after already unfollowed
-POST /users/regularuser1/unfollow
+POST /users/3/unfollow
 Response: 400 Bad Request
 {
-  "error": "Cannot unfollow user: current user is not following user 'regularuser1'",
-  "status_code": 400
+  "error": "User 'User 3' not followed"
 }
 ```
 ```
 # Follow/unfollow unauthenticated
-POST /users/regularuser1/follow
+POST /users/3/follow
 Response: 401 Unauthorized
 {
   "error": "Unauthorized",
-  "status_code": 401
 }
 ```
 
@@ -275,17 +280,17 @@ Response: 200 OK
 {
   "data": {
     "users": [
-	  {
-	    "id": 1,
-	    "name": "Regular User 1"
-	  },
+      {
+        "id": 1,
+        "email": "user_1@triplatest.com"
+        "name": "Regular User 1"
+      },
 	  ...
-	],
+	  ],
     "page": 2,
     "per_page": 15,
     "total": 99
-  },
-  "status_code": 200
+  }
 }
 ```
 ```
@@ -294,12 +299,13 @@ Response: 200 OK
 {
   "data": {
     "users": [
-	  {
-	    "id": 3,
-	    "name": "Regular User 3"
-	  },
-	  ...
-	],
+      {
+        "id": 3,
+        "email": "user_3@triplatest.com"
+        "name": "Regular User 3"
+      },
+      ...
+    ],
     "page": 2,
     "per_page": 15,
     "total": 24
@@ -315,6 +321,7 @@ Response: 200 OK
     "users": [
 	  {
 	    "id": 9,
+      "email": "user_9@triplatest.com"
 	    "name": "Regular User 9"
 	  },
 	  ...
@@ -333,8 +340,7 @@ Response: 200 OK
 GET /users
 Response: 401 Unauthorized
 {
-  "error": "Unauthorized",
-  "statusCode": 401
+  "error": "Unauthorized"
 }
 ```
 ### View user details, normal scenario
@@ -345,32 +351,45 @@ Response: 200 OK
   "data": {
     "id": 1,
     "name": "Regular User 1",
-    "status": "Awake",
-    "records": [
+    "followers": [
+      {
+        "id": 3,
+        "name": "User 3",
+        "email": "user_3@triplatest.com"
+      },
+      ...
+    ],
+    "following": [
+      {
+        "id": 9,
+        "name": "User 9",
+        "email": "user_9@triplatest.com"
+      },
+      ...
+    ],
+    "schedules": [
       {
         "clock_in": "2025-04-07T09:00:00.000Z",
         "clock_out": "2025-04-07T21:00:00.000Z",
-        "duration": "12:00:00"
+        "duration": "12 hours"
       },
       {
         "clock_in": "2025-04-08T09:16:00.000Z",
         "clock_out": null,
-        "duration": "02:44:00" // up to current time e.g. querying at 12pm
+        "duration": "2 hours and 44 minutes" // up to current time e.g. querying at 12pm
       },
       ...
     ]
-  },
-  "statusCode": 200
+  }
 }
 ```
-### View paginated users, with errors
+### View user details, with errors
 ```
 # View users unauthenticated, or not following
-GET /users/regularuser1
+GET /users/3
 Response: 401 Unauthorized
 {
-  "error": "Unauthorized",
-  "statusCode": 401
+  "error": "Unauthorized"
 }
 ```
 
@@ -403,8 +422,7 @@ Response: 200 OK
       "duration": "10 hours and 42 minutes"
     },
     ...
-  ],
-  "statusCode": 200
+  ]
 }
 ```
 ### View all sleep records, with errors
@@ -413,8 +431,7 @@ Response: 200 OK
 GET /sleep-records
 Response: 401 Unauthorized
 {
-  "error": "Unauthorized",
-  "statusCode": 401
+  "error": "Unauthorized"
 }
 ```
 # Overall strategies

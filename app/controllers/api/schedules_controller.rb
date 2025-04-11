@@ -23,7 +23,7 @@ class Api::SchedulesController < ApplicationController
     authorize Schedule
     result = ClockIn.call(user: current_user)
     if result.success?
-      render json: result.schedule
+      render json: { message: "Good morning, #{current_user.name}! Enjoy your day.",  time: result.schedule.clock_in }
     else
       render json: { error: result.message }, status: :internal_server_error
     end
@@ -33,7 +33,7 @@ class Api::SchedulesController < ApplicationController
     authorize Schedule
     result = ClockOut.call(user: current_user)
     if result.success?
-      render json: result.schedule
+      render json: { message: "Good night, #{current_user.name}. Have a good rest.",  time: result.schedule.clock_out }
     else
       render json: { error: result.message }, status: :internal_server_error
     end
