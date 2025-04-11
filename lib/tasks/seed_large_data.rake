@@ -64,18 +64,19 @@ namespace :db do
     end
 
     # Set up Follow Relationships
+    users = User.where(email: users.map(&:email))
     users.each do |user|
       if user.id.even?
         # Follow 5 even ids below and above
-        follow_ids = (user.id - 10..user.id + 10).select { |id| id.even? && id != user.id }
+        follow_ids = ((user.id - 10)..(user.id + 10)).select { |id| id.even? && id != user.id }
       else
         # Follow 5 odd ids below and above
-        follow_ids = (user.id - 10..user.id + 10).select { |id| id.odd? && id != user.id }
+        follow_ids = ((user.id - 10)..(user.id + 10)).select { |id| id.odd? && id != user.id }
       end
 
-      follow_ids = follow_ids.select { |id| id > 0 && id <= users.size }.first(5)
+      follow_ids = follow_ids.select { |id| id > users.order(:id).first.id && id <= users.order(:id).last.id }.first(5)
       follow_ids.each do |follow_id|
-        user.following << users[follow_id - 1]
+        user.following << User.find(follow_id)
       end
       puts "User #{user.email} follows #{follow_ids.size} users"
     end

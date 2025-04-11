@@ -9,7 +9,8 @@ class GetSleepSchedules
   def call
     context.attempts ||= 0
     begin
-      user_ids = [context.user.following.pluck(:id), context.user.id].flatten
+      byebug
+      user_ids = context.user.following.pluck(:id)
       sql = <<~SQL
         WITH numbered AS (
           SELECT *,
@@ -32,8 +33,12 @@ class GetSleepSchedules
             END AS gap
           FROM numbered s1
           JOIN numbered s2 ON s2.rn = s1.rn + 1
+        ),
+        total_count AS (
+          SELECT COUNT(*) AS count FROM paired
         )
-        SELECT user_id, clock_out, clock_in, gap::interval AS gap
+        SELECT user_id, clock_out, clock_in, gap::interval AS gap,
+               (SELECT count FROM total_count) AS total_count
         FROM paired
         ORDER BY gap DESC
         LIMIT ? OFFSET ?
@@ -52,6 +57,7 @@ class GetSleepSchedules
           )
         )
       end
+      context.total_count = raw_results.first['total_count']
     rescue ActiveRecord::StaleObjectError
       context.attempts += 1
       if context.attempts < 3

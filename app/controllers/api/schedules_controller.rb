@@ -11,7 +11,10 @@ class Api::SchedulesController < ApplicationController
 
     result = GetSleepSchedules.call(user: current_user, limit: limit, offset: offset)
     if result.success?
-      render json: result.sleep_schedules
+      render json: {
+        data: result.sleep_schedules,
+        pagination: { total: result.total_count, page: page, page_size: limit },
+      }
     else
       render json: { error: result.message }, status: :internal_server_error
     end
