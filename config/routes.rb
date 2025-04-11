@@ -15,12 +15,14 @@ Rails.application.routes.draw do
 # config/routes.rb
 
   namespace :api do
-    get 'users', to: 'users#index'
+    resources :users, only: [:index, :show] do
+      member do
+        patch 'follow'
+        patch 'unfollow'
+      end
+    end
     get 'following', to: 'users#following'
     get 'followers', to: 'users#followers'
-    get 'users/:username', to: 'users#show'
-    post 'users/:username/follow', to: 'users#follow'
-    delete 'users/:username/unfollow', to: 'users#unfollow'
     get 'sleep_schedules', to: 'schedules#index'
     post 'clock_in', to: 'schedules#clock_in'
     post 'clock_out', to: 'schedules#clock_out'

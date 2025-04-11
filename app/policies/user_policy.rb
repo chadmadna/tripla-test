@@ -6,7 +6,7 @@ class UserPolicy < ApplicationPolicy
     end
 
     def resolve
-      if user.has_role?(:admin, User)
+      if user.has_role?(:admin)
         scope.all
       elsif @user.has_role?(:regular)
         scope.includes(:roles).where.not({ roles: { name: :admin } })

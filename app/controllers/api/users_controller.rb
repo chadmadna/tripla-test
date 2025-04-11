@@ -5,10 +5,11 @@ class Api::UsersController < ApplicationController
     @users = policy_scope(User.all).where.not(id: [current_user.id, current_user.following.pluck(:id)])
     @users = @users.page(user_params[:page]).per(user_params[:per_page])
     authorize @users
-    render json: @users
+    render json: @users, root: 'data'
   end
 
   def show
+    authorize @user
     render json: @user, serializer: UserDetailsSerializer
   end
 
@@ -44,9 +45,8 @@ class Api::UsersController < ApplicationController
 
   def set_user_by_username
     begin
-      @user = User.find_by(email: "#{params[:username]}@triplatest.com")
-      authorize @user
-    rescue ActiveRecord::RecordNotFound, Pundit::NotAuthorizedError, Pundit::NotDefinedError
+      @user = User.where("email LIKE :username", username: "#{user_params[:id]}%").first
+    rescue ActiveRecord::RecordNotFound, Pundit::NotAuthorizedError, Pundit::NotDefinedError => e
       render json: { error: "User not found" }, status: :not_found
     end
   end
@@ -57,7 +57,8 @@ class Api::UsersController < ApplicationController
       :authenticity_token,
       :commit,
       :page,
-      :per_page
+      :per_page,
+      :id
     )
   end
 end

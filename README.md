@@ -18,10 +18,10 @@ Prerequisites:
    Use the `createuser` command to create a new PostgreSQL user with the username specified in the `.env.example` file.
 
    ```bash
-   createuser -P -s -e tripla_test
+   createuser -P -s -e tripla
    ```
 
-   - `-P` prompts for a password (use `tripla_test` as specified in the `.env.example`).
+   - `-P` prompts for a password (use `tripla` as specified in the `.env.example`).
    - `-s` grants superuser privileges.
    - `-e` echoes the commands that `createuser` generates and sends to the server.
 
@@ -30,10 +30,16 @@ Prerequisites:
    Use the `createdb` command to create a new database with the name specified in the `.env.example` file.
 
    ```bash
-   createdb -O tripla_test tripla_test
+   createdb -O tripla tripla
    ```
 
    - `-O` specifies the database owner.
+
+3. **For Testing: Create Database and User**
+   ```bash
+   createuser -P -s -e tripla_test
+   createdb -O tripla_test tripla_test
+   ```
 
 ## Rails Credentials Setup
 
@@ -421,3 +427,7 @@ We approach different availability and consistency strategies for different feat
 
 For efforts outside of the application level, we can implement caching, database indexing, and load balancing.
 - `@TODO: Implement Redis caching`
+
+# Testing
+
+- Run `rails db:test:prepare`
