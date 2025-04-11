@@ -7,7 +7,10 @@ class Api::UsersController < ApplicationController
     per_page = user_params[:per_page].try(:to_i) || 10
     @users = @users_all.page(page).per(per_page)
     authorize @users
-    render json: { data: { users: @users.to_json(only: [:id, :email, :name]) }, page: page, per_page: per_page, total: @users_all.size }
+    render json: {
+      data: { users: @users.to_json(only: [:id, :email, :name]) },
+      pagination: { page: page, per_page: per_page, total: @users_all.size }
+    }
   end
 
   def show
@@ -20,7 +23,10 @@ class Api::UsersController < ApplicationController
     page = user_params[:page].try(:to_i) || 1
     per_page = user_params[:per_page].try(:to_i) || 10
     @following = @following_all.page(page).per(per_page)
-    render json: { data: { users: @following }, page: page, per_page: per_page, total: @following_all.size }
+    render json: {
+      data: { users: @following },
+      pagination: { page: page, per_page: per_page, total: @following_all.size }
+    }
   end
 
   def followers
@@ -28,7 +34,10 @@ class Api::UsersController < ApplicationController
     page = user_params[:page].try(:to_i) || 1
     per_page = user_params[:per_page].try(:to_i) || 10
     @followers = @followers_all.page(page).per(per_page)
-    render json: { data: { users: @followers }, page: page, per_page: per_page, total: @followers_all.size }
+    render json: {
+      data: { users: @followers },
+      pagination: { page: page, per_page: per_page, total: @followers_all.size }
+    }
   end
 
   def follow

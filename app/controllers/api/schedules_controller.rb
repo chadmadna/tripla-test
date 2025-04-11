@@ -12,7 +12,7 @@ class Api::SchedulesController < ApplicationController
     if result.success?
       render json: {
         data: result.sleep_schedules,
-        pagination: { total: result.total_count, page: page, per_page: per_page },
+        pagination: { page: page, per_page: per_page, total: result.total_count },
       }
     else
       render json: { error: result.message }, status: :internal_server_error
