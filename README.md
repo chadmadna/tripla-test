@@ -305,12 +305,13 @@ Response: 200 OK
         "name": "Regular User 3"
       },
       ...
-    ],
+    ]
+  },
+  "pagination": {
     "page": 2,
     "per_page": 15,
     "total": 24
-  },
-  "status_code": 200
+  }
 }
 ```
 ```
@@ -319,18 +320,19 @@ Response: 200 OK
 {
   "data": {
     "users": [
-	  {
-	    "id": 9,
-      "email": "user_9@triplatest.com"
-	    "name": "Regular User 9"
-	  },
-	  ...
-	],
+      {
+        "id": 9,
+        "email": "user_9@triplatest.com"
+        "name": "Regular User 9"
+      },
+      ...
+    ]
+  },
+  "pagination": {
     "page": 3,
     "per_page": 10,
     "total": 39
-  },
-  "status_code": 200
+  }
 }
 ```
 
@@ -422,7 +424,12 @@ Response: 200 OK
       "duration": "10 hours and 42 minutes"
     },
     ...
-  ]
+  ],
+  "pagination": {
+    page: 2,
+    per_page: 15,
+    total: 108
+  }
 }
 ```
 ### View all sleep records, with errors
