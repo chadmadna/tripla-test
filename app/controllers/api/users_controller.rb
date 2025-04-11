@@ -45,7 +45,7 @@ class Api::UsersController < ApplicationController
 
   def set_user_by_username
     begin
-      @user = User.where("email LIKE :username", username: "#{user_params[:id]}%").first
+      @user = User.find(user_params[:id])
     rescue ActiveRecord::RecordNotFound, Pundit::NotAuthorizedError, Pundit::NotDefinedError => e
       render json: { error: "User not found" }, status: :not_found
     end

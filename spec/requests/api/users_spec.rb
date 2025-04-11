@@ -6,9 +6,9 @@ RSpec.describe 'User API', type: :request do
     create(:publisher)
     create(:role, :regular)
     create(:role, :admin)
+    @admin = create(:user, :admin, email: 'admin@example.com')
     @user = create(:user)
-    @admin = create(:user, :admin)
-    @regular_user = create(:user, :regular)
+    @regular_user = create(:user)
   end
 
   after :all do
@@ -17,7 +17,6 @@ RSpec.describe 'User API', type: :request do
 
   let(:user) { @user }
   let(:regular_user) { @regular_user }
-  let(:regular_user_username) { @regular_user.email.split('@').first }
 
   before do
     post '/login', params: { user: { email: @user.email, password: @user.password } }
@@ -34,7 +33,7 @@ RSpec.describe 'User API', type: :request do
 
   describe 'GET users#show' do
     it 'returns a user' do
-      get "/api/users/#{regular_user_username}", headers: @headers
+      get "/api/users/#{regular_user.id}", headers: @headers
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['data']['email']).to eq(regular_user.email)
     end
@@ -42,7 +41,7 @@ RSpec.describe 'User API', type: :request do
 
   describe 'PATCH users#follow' do
     it 'follows a user' do
-      patch "/api/users/#{regular_user_username}/follow", headers: @headers
+      patch "/api/users/#{regular_user.id}/follow", headers: @headers
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['message']).to eq("User '#{regular_user.name}' followed")
     end
@@ -50,10 +49,10 @@ RSpec.describe 'User API', type: :request do
 
   describe 'PATCH users#unfollow' do
     before do
-      patch "/api/users/#{regular_user_username}/follow", headers: @headers
+      patch "/api/users/#{regular_user.id}/follow", headers: @headers
     end
     it 'unfollows a user' do
-      patch "/api/users/#{regular_user_username}/unfollow", headers: @headers
+      patch "/api/users/#{regular_user.id}/unfollow", headers: @headers
       expect(response).to have_http_status(:ok)
       expect(JSON.parse(response.body)['message']).to eq("User '#{regular_user.name}' unfollowed")
     end

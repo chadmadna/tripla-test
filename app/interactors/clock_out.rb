@@ -12,9 +12,9 @@ class ClockOut
       end
       ActiveRecord::Base.transaction do
         last_schedule.with_lock do
-          last_schedule.update!(clock_in: Time.now)
-          context.schedule = last_schedule
+          last_schedule.update!(clock_out: Time.now)
         end
+        context.schedule = last_schedule
       end
     rescue ActiveRecord::RecordInvalid => e
       context.fail!(message: e.message)

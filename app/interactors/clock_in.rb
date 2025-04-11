@@ -10,15 +10,11 @@ class ClockIn
       end
       ActiveRecord::Base.transaction do
         if schedules.empty?
-          schedules.with_lock do
-            schedule << Schedule.create!(user: context.user, clock_in: Time.now)
-            context.schedule = schedule
-          end
+          schedule = schedules.lock.create!(user: context.user, clock_in: Time.now)
+          context.schedule = schedule
         else
-          last_schedule.with_lock do
-            last_schedule.update!(clock_in: Time.now)
-            context.schedule = last_schedule
-          end
+          last_schedule.lock.update!(clock_in: Time.now)
+          context.schedule = last_schedule
         end
       end
     rescue ActiveRecord::RecordInvalid => e

@@ -56,7 +56,7 @@ class GetSleepSchedules
           )
         )
       end
-      context.total_count = raw_results.first['total_count']
+      context.total_count = raw_results.first.try(:[], 'total_count') || 0
     rescue ActiveRecord::StaleObjectError
       context.attempts += 1
       if context.attempts < 3

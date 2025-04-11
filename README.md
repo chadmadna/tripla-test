@@ -337,7 +337,7 @@ Response: 401 Unauthorized
 ```
 ### View user details, normal scenario
 ```
-GET /users/regularuser1
+GET /users/1
 Response: 200 OK
 {
   "data": {
