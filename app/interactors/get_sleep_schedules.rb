@@ -9,7 +9,6 @@ class GetSleepSchedules
   def call
     context.attempts ||= 0
     begin
-      byebug
       user_ids = context.user.following.pluck(:id)
       sql = <<~SQL
         WITH numbered AS (
