@@ -426,8 +426,3 @@ We approach different availability and consistency strategies for different feat
 - For the clock-in/out feature, we prioritize consistency by using pessimistic locking and transactions on both clock-in and clock-out endpoints.
 
 For efforts outside of the application level, we can implement caching, database indexing, and load balancing.
-- `@TODO: Implement Redis caching`
-
-# Testing
-
-- Run `rails db:test:prepare`
