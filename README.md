@@ -262,7 +262,7 @@ Response: 401 Unauthorized
 
 ### View paginated users, normal scenario
 ```
-GET /users?page=2&page_size=15
+GET /users?page=2&per_page=15
 Response: 200 OK
 {
   "data": {
@@ -274,18 +274,51 @@ Response: 200 OK
 	  ...
 	],
     "page": 2,
-    "page_size": 15,
+    "per_page": 15,
     "total": 99
   },
   "status_code": 200
 }
 ```
 ```
-# View users as regular user directly to 'GET /users' without params
-GET /users
-Response: 302 Found
-Location: localhost:3000/users?view=discover
+GET /users/followers?page=2&per_page=15
+Response: 200 OK
+{
+  "data": {
+    "users": [
+	  {
+	    "id": 3,
+	    "name": "Regular User 3"
+	  },
+	  ...
+	],
+    "page": 2,
+    "per_page": 15,
+    "total": 24
+  },
+  "status_code": 200
+}
 ```
+```
+GET /users/following?page=3&per_page=10
+Response: 200 OK
+{
+  "data": {
+    "users": [
+	  {
+	    "id": 9,
+	    "name": "Regular User 9"
+	  },
+	  ...
+	],
+    "page": 3,
+    "per_page": 10,
+    "total": 39
+  },
+  "status_code": 200
+}
+```
+
 ### View paginated users, with errors
 ```
 # View users unauthenticated
@@ -343,7 +376,7 @@ Response: 401 Unauthorized
 ### View all sleep records, normal scenario
 ```
 # Current time: 9 April 2025, 09:00:00
-GET /sleep_schedules?page=2&page_size=15
+GET /sleep_schedules?page=2&per_page=15
 Response: 200 OK
 {
   "data": [
