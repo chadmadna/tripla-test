@@ -41,6 +41,8 @@ Prerequisites:
    createdb -O tripla_test tripla_test
    ```
 
+   Then run `rspec`
+
 ## Rails Credentials Setup
 
 If you need to set up Rails credentials, you can use the `RAILS_MASTER_KEY` provided in the `.env.example` file. Replace `replace_with_master_key` with your actual master key.
